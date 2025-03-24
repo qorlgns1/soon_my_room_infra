@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d/prod:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend-client-prod
+      - backend-client-prod
+
+  frontend-client-prod:
+    build:
+      context: ./services/frontend/client
+      args:
+        - NODE_ENV=production
+    image: frontend-client:prod
+    container_name: frontend-client-prod
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  backend-client-prod:
+    build:
+      context: ./services/backend/client-api
+      args:
+        - SPRING_PROFILES_ACTIVE=prod
+    image: backend-client-api:prod
+    container_name: backend-client-api-prod
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - ./services/backend/client-api/.env
+    networks:
+      - app-network

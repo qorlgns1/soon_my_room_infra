@@ -1,0 +1,15 @@
+# Front, Backend Projects
+services/*
+
+# Environment Files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+.DS_Store
+
+# ssl
+nginx/ssl/

@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  nginx:
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d/dev:/etc/nginx/conf.d
+    depends_on:
+      - frontend-client-dev
+      - backend-client-dev
+
+  frontend-client-dev:
+    build:
+      context: ./services/frontend/client
+      args:
+        - NODE_ENV=development
+    image: frontend-client:dev
+    container_name: frontend-client-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  backend-client-dev:
+    build:
+      context: ./services/backend/client-api
+      args:
+        - SPRING_PROFILES_ACTIVE=dev
+    image: backend-client-api:dev
+    container_name: backend-client-api-dev
+    ports:
+      - "9000:9000"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    env_file:
+      - ./services/backend/client-api/.env
+    networks:
+      - app-network
